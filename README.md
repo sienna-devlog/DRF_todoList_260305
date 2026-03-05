@@ -1,14 +1,15 @@
 # 🚀 todoList_Django_to_DRF
-## 진행상황
-<img width="1728" height="1117" alt="todolist" src="https://github.com/user-attachments/assets/ef4556d1-8eea-44b4-9378-a79ca6310587" />
-<img width="921" height="174" alt="test_crud" src="https://github.com/user-attachments/assets/1e2d0789-6fb6-4e9a-9a7a-ddd3a2d63d7f" />
-
-
-
 이 프로젝트는 Django 기반 Todo 애플리케이션을 시작으로
 Django REST Framework, JWT 인증, PostgreSQL 전환,
 AI 모델 연동(Hugging Face), Redis/Celery 비동기 처리까지
 단계적으로 확장하는 풀스택 학습 프로젝트입니다.
+
+
+## 진행상황
+<img width="1728" height="1117" alt="todolist" src="https://github.com/user-attachments/assets/ef4556d1-8eea-44b4-9378-a79ca6310587" />
+<img width="921" height="174" alt="test_crud" src="https://github.com/user-attachments/assets/1e2d0789-6fb6-4e9a-9a7a-ddd3a2d63d7f" />
+<img width="872" height="174" alt="Screenshot 2026-03-05 at 11 34 04 pm" src="https://github.com/user-attachments/assets/5c4dbe3a-ee5a-457d-a960-0ce547bf0ce5" />
+
 
 ---
 
