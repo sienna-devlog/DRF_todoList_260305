@@ -1,5 +1,8 @@
 # 🚀 todoList_Django_to_DRF
+## 진행상황
 <img width="1728" height="1117" alt="todolist" src="https://github.com/user-attachments/assets/ef4556d1-8eea-44b4-9378-a79ca6310587" />
+<img width="921" height="174" alt="test_crud" src="https://github.com/user-attachments/assets/1e2d0789-6fb6-4e9a-9a7a-ddd3a2d63d7f" />
+
 
 
 이 프로젝트는 Django 기반 Todo 애플리케이션을 시작으로
