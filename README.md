@@ -1,5 +1,6 @@
 # 🚀 todoList_Django_to_DRF
-![Uploading todolist.png…]()
+<img width="1728" height="1117" alt="todolist" src="https://github.com/user-attachments/assets/ef4556d1-8eea-44b4-9378-a79ca6310587" />
+
 
 이 프로젝트는 Django 기반 Todo 애플리케이션을 시작으로
 Django REST Framework, JWT 인증, PostgreSQL 전환,
