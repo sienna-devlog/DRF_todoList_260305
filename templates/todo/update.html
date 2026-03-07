@@ -6,6 +6,20 @@
   <h2>Todo 수정</h2>
 
   <div>
+    <label>Current Image:</label><br>
+    {% if todo.image %}
+      <img src="{{ todo.image.url }}" alt="todo image" style="max-width:250px; height:auto;">
+    {% else %}
+      <p>-</p>
+    {% endif %}
+  </div>
+
+  <div>
+    <label for="image">New Image:</label>
+    <input type="file" id="image">
+  </div>
+
+  <div>
     <label for="name">Name:</label>
     <input type="text" name="name" id="name" value="{{ todo.name }}">
   </div>
@@ -76,7 +90,13 @@ document.getElementById("todoUpdate").addEventListener("click", async () => {
     formData.append("exp", document.getElementById("exp").value || 0);
     // exp 입력값 추가 (값이 없으면 0으로 설정)
 
-    const res = await api.patch(`/todo/api/update/${todoId}/`, formData);
+    const imageInput = document.getElementById("image");
+
+    if (imageInput.files.length > 0) {
+      formData.append("image", imageInput.files[0]);
+    }
+
+    const res = await api.patch(`/todo/viewsets/view/${todoId}/`, formData);
     // PATCH 요청으로 Todo 데이터 수정 API 호출
     // formData를 서버로 전송하여 일부 필드만 수정
 

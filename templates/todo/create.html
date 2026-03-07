@@ -3,74 +3,73 @@
 {% block content %}
 <div class="container">
   <h2>Create a New Todo</h2>
-    <div>
-      <label for="name">Name:</label>
-      <input type="text" name="name" id="name">
-    </div>
-
-    <div>
-      <label for="description">Description:</label>
-      <textarea name="description" id="description">
-      </textarea>
-    </div>
-
-    <div>
-      <label for="complete">Complete:</label>
-      <input type="checkbox" name="complete" id="complete">
-    </div>
-
-    <div>
-      <label for="exp">Experience Points:</label>
-      <input type="number" name="exp" id="exp" min="0">
-    </div>
-
-    <button type="submit" id="todoCreate">Create</button>
+  <div>
+    <label for="image">Image:</label>
+    <input type="file" id="image">
+  </div>
+  <div>
+    <label for="name">Name:</label>
+    <input type="text" name="name" id="name">
+  </div>
+  <div>
+    <label for="description">Description:</label>
+    <textarea name="description" id="description"></textarea>
+  </div>
+  <div>
+    <label for="complete">Complete:</label>
+    <input type="checkbox" name="complete" id="complete">
+  </div>
+  <div>
+    <label for="exp">Experience Points:</label>
+    <input type="number" name="exp" id="exp" min="0">
+  </div>
+  <button type="submit" id="todoCreate">Create</button>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-<!-- axios 라이브러리 CDN 로드 (HTTP 요청을 쉽게 보내기 위한 라이브러리) -->
-
 <script>
+
 const api = axios.create({
   baseURL: "/",
-  // 모든 API 요청의 기본 URL
+  // Content-Type을 직접 지정하지 않음
+  // → 브라우저가 FormData를 보낼 때 자동으로 multipart/form-data로 설정해줌
+});
 
-  headers: {
-    "Content-Type": "application/json", // 서버로 보낼 데이터 형식 지정 (JSON)
-    "X-CSRFToken": "{{ csrf_token }}"
+// Axios 인터셉터: 모든 요청이 서버로 가기 전에 실행
+api.interceptors.request.use(config => {
+  // 쿠키에서 csrftoken을 읽어서 헤더에 자동으로 추가
+  const csrftoken = document.cookie
+    .split("; ")
+    .find(row => row.startsWith("csrftoken="))
+    ?.split("=")[1];
+
+  if (csrftoken) {
+    config.headers["X-CSRFToken"] = csrftoken;
   }
+  return config;
 });
 
 document.getElementById("todoCreate").addEventListener("click", async () => {
-  // todoCreate 버튼 클릭 시 실행
+  try {
+    // FormData: 파일 포함 데이터를 서버로 전송할 때 사용
+    const formData = new FormData();
+    formData.append("name", document.getElementById("name").value);
+    formData.append("description", document.getElementById("description").value);
+    formData.append("complete", document.getElementById("complete").checked);
+    formData.append("exp", document.getElementById("exp").value || 0);
 
-  try { // 에러가 발생할 수 있는 코드를 실행하는 영역
+    // 이미지가 선택된 경우에만 추가
+    const fileInput = document.getElementById("image");
+    if (fileInput.files.length > 0) {
+      formData.append("image", fileInput.files[0]);
+    }
 
-    const res = await api.post("todo/viewsets/view/", {
-      // 비동기 작업이 끝날 때까지 기다림, 서버 응답이 올 때까지 기다린 후 다음 코드 실행
-
-      name: document.getElementById("name").value,
-      // 입력한 Todo 이름
-
-      description: document.getElementById("description").value,
-      // 입력한 설명
-
-      complete: document.getElementById("complete").checked,
-      // 체크박스 상태 (true / false)
-
-      exp: Number(document.getElementById("exp").value || 0)
-      // 경험치 입력값 (숫자로 변환, 없으면 0)
-    });
-
+    const res = await api.post("todo/viewsets/view/", formData);
     console.log(res.data);
-    // 서버에서 받은 응답 데이터 출력
-
-    // 글 저장 후 메인페이지 이동
     window.location.href = "/todo/list/";
 
-  } catch (err) { // 에러가 발생했을 때 처리하는 영역
+  } catch (err) {
     console.error(err.response?.data || err.message);
-    // 에러 발생 시 콘솔에 에러 출력
   }
 });
 </script>

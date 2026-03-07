@@ -132,3 +132,7 @@ REST_FRAMEWORK = {
         "rest_framework.renderers.BrowsableAPIRenderer",
     ],
 }
+
+# Media 파일 설정
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"

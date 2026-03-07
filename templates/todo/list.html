@@ -70,6 +70,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             /* Todo 정보 표시 */
             div.innerHTML = `
+                ${todo.image ? `<img src="${todo.image}" style="max-width:200px;">` : ""}
                 <p><strong>이름:</strong> ${todo.name}</p>
                 <p><strong>설명:</strong> ${todo.description}</p>
                 <p><strong>완료 여부:</strong> ${todo.complete}</p>
