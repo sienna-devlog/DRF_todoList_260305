@@ -1,4 +1,4 @@
-{% extends "todo/base.html" %}
+{% extends "base.html" %}
 {% load static %}
 {% block content %}
 
@@ -15,14 +15,12 @@
   <p><strong>작성일:</strong> {{ todo.created_at }}</p>
 </div>
 
+<!-- 버튼 영역 -->
 <div class="btnList">
   <button class="todoUpdate">수정</button>
   <button class="todoDelete">삭제</button>
   <button class="todoHome">홈으로</button>
 </div>
-
-  <!-- axios 라이브러리 CDN 로드 (HTTP 요청을 쉽게 보내기 위한 라이브러리) -->
-<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {

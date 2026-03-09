@@ -29,13 +29,40 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "todo",
     "rest_framework",
+    "todo",
+    "accounts",
 ]
 
 REST_FRAMEWORK = {
+    # 인증 방식 설정
+    # API 요청을 보낸 사용자가 누구인지 확인하는 방법
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        # 세션 인증 (Django 로그인 기반)
+        # 브라우저에서 로그인 상태라면 자동 인증됨
+        "rest_framework.authentication.SessionAuthentication",
+        # Basic 인증 (아이디/비밀번호를 헤더로 보내는 방식)
+        # 주로 테스트용으로 사용됨 (Postman, curl 등)
+        "rest_framework.authentication.BasicAuthentication",
+    ],
+    # 기본 권한 설정
+    # 인증된 사용자만 API 접근 가능
+    "DEFAULT_PERMISSION_CLASSES": [
+        # 로그인한 사용자만 API 사용 가능
+        "rest_framework.permissions.IsAuthenticated",
+    ],
+    # 기본 페이지네이션 클래스 설정
+    # API 목록 조회 시 페이지 단위로 데이터를 반환
+    "DEFAULT_PAGINATION_CLASS": "todo.pagination.CustomPageNumberPagination",
+    # 기본 페이지 크기
+    # 한 페이지에 보여줄 데이터 개수
+    "PAGE_SIZE": 3,
+    # 응답 데이터 출력 형식(Renderer)
     "DEFAULT_RENDERER_CLASSES": [
+        # JSON 형식 응답 (프론트엔드 / API 사용 시 기본)
         "rest_framework.renderers.JSONRenderer",
+        # DRF 브라우저 API 화면 제공 (개발/테스트용)
+        "rest_framework.renderers.BrowsableAPIRenderer",
     ],
 }
 

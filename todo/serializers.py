@@ -6,5 +6,14 @@ from .models import Todo
 class TodoSerializer(ModelSerializer):
     class Meta:
         model = Todo
-        fields = "__all__"
-        read_only_fields = ["created_at", "updated_at"]
+        fields = [
+            "user",
+            "id",
+            "name",
+            "description",
+            "complete",
+            "exp",
+            "image",
+            "created_at",
+        ]
+        read_only_fields = ["user"]

@@ -20,4 +20,4 @@ ruff==0.15.4
 sqlparse==0.5.5
 virtualenv==21.1.0
 django-environ==0.13.0
-Pillow
+pillow==12.1.1
