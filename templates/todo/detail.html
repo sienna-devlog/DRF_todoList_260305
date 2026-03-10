@@ -15,7 +15,6 @@
   <p><strong>작성일:</strong> {{ todo.created_at }}</p>
 </div>
 
-<!-- 버튼 영역 -->
 <div class="btnList">
   <button class="todoUpdate">수정</button>
   <button class="todoDelete">삭제</button>
@@ -24,63 +23,114 @@
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-  // HTML 문서가 모두 로드된 후 실행
-
   const todoId = "{{ todo.id }}";
-  // Django 템플릿에서 전달된 todo의 id(pk)를 JS 변수에 저장
+  const LOGIN_PAGE_URL = "/login/";   // ✅ (유지)
+  const LIST_PAGE_URL  = "/todo/list/"; // ✅ (유지)
 
-  // axios 인스턴스 생성
-  const api = axios.create({
-    baseURL: "/",
-    headers: {
-      "Content-Type": "application/json",
-      "X-CSRFToken": "{{ csrf_token }}"
+  // ✅ [삭제됨] 기존: 세션 기반 CSRF 쿠키 꺼내는 함수
+  /*
+  function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(";").shift();
+    return null;
+  }
+  */
+
+  // ✅ [추가됨] 3단계: 공통 axios 인스턴스(window.api) 사용
+  if (!window.api) {
+    console.error("window.api가 없습니다. base.html에서 static/js/api.js가 로드됐는지 확인하세요.");
+    alert("설정 오류: api.js가 로드되지 않았습니다.");
+    return;
+  }
+
+  // ✅ [추가됨] access 토큰 없으면 로그인으로(선택)
+  const access = localStorage.getItem("access_token");
+  if (!access) {
+    console.log("access_token 없음 → 로그인 이동");
+    window.location.href = LOGIN_PAGE_URL;
+    return;
+  }
+
+  // ✅ [추가됨] 401/403 처리 함수 (세션 기반의 res.status 체크 대체)
+  function handleAuthError(err) {
+    const status = err.response?.status;
+    if (status === 401 || status === 403) {
+      alert("로그인이 필요합니다.");
+
+      // ✅ [추가됨] (선택) 토큰 정리
+      localStorage.removeItem("access_token");
+      localStorage.removeItem("refresh_token");
+
+      window.location.href = LOGIN_PAGE_URL;
     }
-  });
+    return Promise.reject(err);
+  }
 
-  // 기존 수정 버튼
-  const updateBtn = document.querySelector(".todoUpdate");
-  // class가 todoUpdate인 버튼 선택
-
-  updateBtn.addEventListener("click", () => {
-    // 수정 버튼 클릭 시 실행
+  // 수정 버튼 (✅ 유지)
+  document.querySelector(".todoUpdate").addEventListener("click", () => {
     window.location.href = `/todo/update/${todoId}/`;
-    // 해당 todo의 수정 페이지로 이동
   });
 
-  // 삭제 버튼
-  const deleteBtn = document.querySelector(".todoDelete");
-  // class가 todoDelete인 버튼 선택
-
-  deleteBtn.addEventListener("click", async () => {
-    // 삭제 버튼 클릭 시 실행
-
+  // ✅ [삭제됨] 기존: fetch로 DELETE (세션 쿠키 + CSRF 필요)
+  /*
+  document.querySelector(".todoDelete").addEventListener("click", async () => {
     const ok = confirm("정말 삭제하시겠습니까?");
-    // 사용자에게 삭제 여부 확인 창 표시
-
     if (!ok) return;
-    // 취소를 누르면 삭제 진행하지 않음
 
     try {
-      const res = await api.delete(`/todo/viewsets/view/${todoId}/`);
-      console.log(res.data);
-      window.location.href = "/todo/list/";
+      const res = await fetch(`/todo/viewsets/view/${todoId}/`, {
+        method: "DELETE",
+        credentials: "same-origin", // ✅ 세션 쿠키 포함 (안전)
+        headers: {
+          "X-CSRFToken": getCookie("csrftoken"),
+        }
+      });
+
+      // ✅ 세션 없거나 권한 없으면 로그인으로
+      if (res.status === 401 || res.status === 403) {
+        alert("로그인이 필요합니다.");
+        window.location.href = LOGIN_PAGE_URL;
+        return;
+      }
+
+      if (!res.ok) throw new Error("삭제 실패");
+
+      // 삭제 성공 → 리스트로 이동
+      window.location.href = LIST_PAGE_URL;
+
     } catch (err) {
-      console.error(err.response?.data || err.message);
-      alert("삭제 실패");
+      console.error(err);
+      alert("삭제 중 오류가 발생했습니다.");
     }
-  }); // 삭제 기능 끝
-
-  // 홈으로 버튼
-  const homeBtn = document.querySelector(".todoHome");
-  // class가 todoHome인 버튼 선택
-
-  homeBtn.addEventListener("click", () => {
-    // 홈 버튼 클릭 시 실행
-    window.location.href = "/todo/list/";
-    // Todo 목록 페이지로 이동
   });
-  // 홈 버튼 기능 끝
+  */
+
+  // ✅ [수정됨] 변경: window.api.delete(...) 사용 (JWT Authorization은 api.js가 자동 부착)
+  document.querySelector(".todoDelete").addEventListener("click", async () => {
+    const ok = confirm("정말 삭제하시겠습니까?");
+    if (!ok) return;
+
+    try {
+      // ✅ 변경: fetch → axios(window.api)
+      await window.api.delete(`/todo/viewsets/view/${todoId}/`);
+      window.location.href = LIST_PAGE_URL;
+
+    } catch (err) {
+      // ✅ [추가됨] 인증 문제면 로그인으로
+      handleAuthError(err).catch(() => {});
+
+      console.error("삭제 실패:", err.response?.data || err.message);
+      // ✅ [수정됨] 로그 상세화
+
+      alert("삭제 중 오류가 발생했습니다.");
+    }
+  });
+
+  // 홈으로 버튼 (✅ 유지)
+  document.querySelector(".todoHome").addEventListener("click", () => {
+    window.location.href = LIST_PAGE_URL;
+  });
 
 });
 </script>

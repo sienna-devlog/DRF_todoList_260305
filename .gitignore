@@ -28,6 +28,12 @@ db.sqlite3
 # staticfiles/
 # static/
 node_modules/
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.webp
+*.svg
 
 # VS Code 및 IDE 설정 파일 제외
 .vscode/

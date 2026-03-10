@@ -1,6 +1,7 @@
 from pathlib import Path
 import os
 import environ
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -38,12 +39,11 @@ REST_FRAMEWORK = {
     # 인증 방식 설정
     # API 요청을 보낸 사용자가 누구인지 확인하는 방법
     "DEFAULT_AUTHENTICATION_CLASSES": [
-        # 세션 인증 (Django 로그인 기반)
-        # 브라우저에서 로그인 상태라면 자동 인증됨
+        # 1) JWT 우선
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+        # 2) 전환기 안전장치(선택): 기존 세션도 허용
+        #    모든 프론트가 JWT로 바뀐 후 제거 가능
         "rest_framework.authentication.SessionAuthentication",
-        # Basic 인증 (아이디/비밀번호를 헤더로 보내는 방식)
-        # 주로 테스트용으로 사용됨 (Postman, curl 등)
-        "rest_framework.authentication.BasicAuthentication",
     ],
     # 기본 권한 설정
     # 인증된 사용자만 API 접근 가능
@@ -64,6 +64,17 @@ REST_FRAMEWORK = {
         # DRF 브라우저 API 화면 제공 (개발/테스트용)
         "rest_framework.renderers.BrowsableAPIRenderer",
     ],
+}
+
+SIMPLE_JWT = {
+    # access는 짧게(보안), refresh는 길게(편의)
+    "ACCESS_TOKEN_LIFETIME": timedelta(hours=300),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=365),
+    # Authorization: Bearer <token>
+    "AUTH_HEADER_TYPES": ("Bearer",),
+    # (5~6단계에서 다룰 것들 - 지금은 False로 두고 시작 권장)
+    "ROTATE_REFRESH_TOKENS": False,
+    "BLACKLIST_AFTER_ROTATION": False,
 }
 
 MIDDLEWARE = [
@@ -143,7 +154,9 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 STATICFILES_DIRS = [
-    BASE_DIR / "todo/static",
+    # BASE_DIR / "todo/static",
+    BASE_DIR
+    / "static",
 ]
 
 REST_FRAMEWORK = {

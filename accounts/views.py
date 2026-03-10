@@ -1,8 +1,4 @@
-# Django 인증 관련 함수
-# authenticate → 사용자 인증
-# login → 세션 로그인 처리
-# logout → 세션 로그아웃 처리
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import logout
 
 # DRF APIView 사용
 from rest_framework.views import APIView
@@ -14,14 +10,14 @@ from rest_framework.response import Response
 from rest_framework import status
 
 # 모든 사용자 접근 허용
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 
 # 회원가입 데이터 검증 Serializer
 from .serializers import SignupSerializer
 
 
 # -----------------------------
-# 회원가입 API
+# 회원가입 API (JWT/세션과 무관하게 그대로 사용)
 # -----------------------------
 class SignupAPIView(APIView):
     permission_classes = [AllowAny]
@@ -35,35 +31,13 @@ class SignupAPIView(APIView):
 
 
 # -----------------------------
-# 세션 로그인 API
-# -----------------------------
-class SessionLoginAPIView(APIView):
-    permission_classes = [AllowAny]
-
-    def post(self, request):
-        username = request.data.get("username", "")
-        password = request.data.get("password", "")
-
-        user = authenticate(request, username=username, password=password)
-
-        if not user:
-            return Response(
-                {"detail": "아이디/비밀번호가 올바르지 않습니다."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        login(request, user)
-
-        return Response({"detail": "로그인 성공"}, status=status.HTTP_200_OK)
-
-
-# -----------------------------
-# 세션 로그아웃 API
+#     ⚠️ 전환기 임시 로그아웃(세션 정리용)
+#    - JWT 환경에서 '로그아웃'은 보통 프론트에서 토큰 삭제로 처리합니다.
+#    - 그래도 혹시 남아있을 수 있는 세션을 logout(request)로 정리해줍니다.
 # -----------------------------
 class SessionLogoutAPIView(APIView):
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
-
         logout(request)
-
-        return Response({"detail": "로그아웃"}, status=status.HTTP_200_OK)
+        return Response({"detail": "로그아웃(세션 정리)"}, status=status.HTTP_200_OK)
