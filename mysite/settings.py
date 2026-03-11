@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "todo",
     "accounts",
+    "interaction",
 ]
 
 REST_FRAMEWORK = {
@@ -47,6 +48,7 @@ REST_FRAMEWORK = {
     ],
     # 기본 권한 설정
     # 인증된 사용자만 API 접근 가능
+    # 실무 기본: 기본은 잠그고, 인증/회원가입 뷰만 AllowAny로 예외 처리
     "DEFAULT_PERMISSION_CLASSES": [
         # 로그인한 사용자만 API 사용 가능
         "rest_framework.permissions.IsAuthenticated",
@@ -158,20 +160,6 @@ STATICFILES_DIRS = [
     BASE_DIR
     / "static",
 ]
-
-REST_FRAMEWORK = {
-    "DEFAULT_PERMISSION_CLASSES": [
-        "rest_framework.permissions.AllowAny",
-    ],
-    # 페이지네이션 설정
-    "DEFAULT_PAGINATION_CLASS": "todo.pagination.CustomPageNumberPagination",
-    "PAGE_SIZE": 3,
-    # API 응답 형식 (JSON + 브라우저용 UI 둘 다)
-    "DEFAULT_RENDERER_CLASSES": [
-        "rest_framework.renderers.JSONRenderer",
-        "rest_framework.renderers.BrowsableAPIRenderer",
-    ],
-}
 
 # Media 파일 설정
 MEDIA_URL = "/media/"

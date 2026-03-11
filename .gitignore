@@ -42,3 +42,9 @@ node_modules/
 
 # Docker 관련 파일 제외 (사용할 경우)
 docker-compose.override.yml
+
+# 맥 자동 생성 파일
+.DS_Store
+
+# Jupyter Notebook 자동 저장 임시 폴더
+.ipynb_checkpoints/
