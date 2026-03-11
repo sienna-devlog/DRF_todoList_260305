@@ -16,6 +16,7 @@ AI 모델 연동(Hugging Face), Redis/Celery 비동기 처리까지
 <img width="1159" height="252" alt="login_successful" src="https://github.com/user-attachments/assets/d409aee0-c59a-4148-b158-79b0002348d3" />
 <img width="1728" height="978" alt="interactive_css" src="https://github.com/user-attachments/assets/82935560-52e8-4a57-9324-da2e4f764132" />
 <img width="1078" height="577" alt="comment" src="https://github.com/user-attachments/assets/4664b4c3-5dcc-48d8-acab-ad91200e8b51" />
+<img width="1181" height="831" alt="dbeaver" src="https://github.com/user-attachments/assets/e0e7ccd1-502c-4460-867e-33d3d1d72c75" />
 
 
 ---
