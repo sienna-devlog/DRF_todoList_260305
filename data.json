@@ -1,0 +1,186 @@
+[
+{
+  "model": "auth.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$x6T1dW36I2YkkGo4wBElKC$pKX82C67rVp1YQV0LoPJgYN2R/jYjRxXwoy8lzo50Go=",
+    "last_login": "2026-03-10T08:28:59.737Z",
+    "is_superuser": true,
+    "username": "admin",
+    "first_name": "",
+    "last_name": "",
+    "email": "",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-03-05T01:04:12.959Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$ng7gTPdb8sX7q0uGZmhm1l$9vU1Lb5IARZdoLvECLxyzNhIDn7niuvcB9ctUDmDN6E=",
+    "last_login": "2026-03-10T01:46:26.910Z",
+    "is_superuser": false,
+    "username": "test",
+    "first_name": "",
+    "last_name": "",
+    "email": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-03-09T17:35:31.089Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$OGJZvOFW9JyTQv8g7PI4yp$/HZTi51KWQJMEpbd60UioI5bDsOv33z8zrCP/IQct28=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "test1",
+    "first_name": "",
+    "last_name": "",
+    "email": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-03-09T17:51:25.477Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "todo.todo",
+  "pk": 1,
+  "fields": {
+    "user": [
+      "test"
+    ],
+    "name": "강아지 목욕",
+    "description": "강아지 양치 & 목욕",
+    "complete": true,
+    "exp": 100,
+    "completed_at": "2026-03-09T17:37:46.338Z",
+    "created_at": "2026-03-09T17:37:46.338Z",
+    "updated_at": "2026-03-09T17:37:46.338Z",
+    "image": "todo_images/IMG_3831_O56Tn9m.JPG",
+    "is_public": true
+  }
+},
+{
+  "model": "todo.todo",
+  "pk": 2,
+  "fields": {
+    "user": [
+      "test"
+    ],
+    "name": "생일파티",
+    "description": "🎉",
+    "complete": true,
+    "exp": 50,
+    "completed_at": "2026-03-09T17:47:36.414Z",
+    "created_at": "2026-03-09T17:47:36.416Z",
+    "updated_at": "2026-03-09T17:47:53.437Z",
+    "image": "todo_images/IMG_3712_g5X3LWu.JPG",
+    "is_public": true
+  }
+},
+{
+  "model": "todo.todo",
+  "pk": 3,
+  "fields": {
+    "user": [
+      "test"
+    ],
+    "name": "산책",
+    "description": "📸",
+    "complete": false,
+    "exp": 0,
+    "completed_at": null,
+    "created_at": "2026-03-09T17:48:40.969Z",
+    "updated_at": "2026-03-09T17:49:33.050Z",
+    "image": "todo_images/IMG_8069_YLV7i4L.jpeg",
+    "is_public": true
+  }
+},
+{
+  "model": "interaction.todolike",
+  "pk": 1,
+  "fields": {
+    "user": [
+      "test"
+    ],
+    "todo": 3,
+    "created_at": "2026-03-11T04:58:47.975Z"
+  }
+},
+{
+  "model": "interaction.todolike",
+  "pk": 2,
+  "fields": {
+    "user": [
+      "test"
+    ],
+    "todo": 2,
+    "created_at": "2026-03-11T05:12:04.852Z"
+  }
+},
+{
+  "model": "interaction.todolike",
+  "pk": 3,
+  "fields": {
+    "user": [
+      "test"
+    ],
+    "todo": 1,
+    "created_at": "2026-03-11T05:12:05.987Z"
+  }
+},
+{
+  "model": "interaction.todolike",
+  "pk": 4,
+  "fields": {
+    "user": [
+      "test1"
+    ],
+    "todo": 1,
+    "created_at": "2026-03-11T07:53:59.124Z"
+  }
+},
+{
+  "model": "interaction.todobookmark",
+  "pk": 2,
+  "fields": {
+    "user": [
+      "test"
+    ],
+    "todo": 1,
+    "created_at": "2026-03-11T04:58:52.373Z"
+  }
+},
+{
+  "model": "interaction.todocomment",
+  "pk": 1,
+  "fields": {
+    "user": [
+      "test"
+    ],
+    "todo": 1,
+    "content": "꺠끗해진 별이",
+    "created_at": "2026-03-11T04:59:01.827Z"
+  }
+},
+{
+  "model": "interaction.todocomment",
+  "pk": 2,
+  "fields": {
+    "user": [
+      "test1"
+    ],
+    "todo": 1,
+    "content": "별이 안녕",
+    "created_at": "2026-03-11T07:54:23.368Z"
+  }
+}
+]

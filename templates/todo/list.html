@@ -24,14 +24,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const LOGIN_PAGE_URL = "/login/";
   let currentPage = 1;
 
-  // axios 인스턴스(window.api) 확인
   if (!window.api) {
     console.error("window.api가 없습니다. base.html에서 static/js/api.js 로드 확인");
     alert("설정 오류: api.js가 로드되지 않았습니다.");
     return;
   }
 
-  // access_token 없으면 로그인으로
   const access = localStorage.getItem("access_token");
   if (!access) {
     console.log("access_token 없음 → 로그인 이동");
@@ -42,7 +40,6 @@ document.addEventListener("DOMContentLoaded", () => {
   // ======================================================
   // 1) 공통 헬퍼
   // ======================================================
-  // 인증 실패(401/403) → 토큰 삭제 후 로그인 이동
   function handleAuthError(err) {
     const status = err.response?.status;
     if (status === 401 || status === 403) {
@@ -54,7 +51,6 @@ document.addEventListener("DOMContentLoaded", () => {
     return Promise.reject(err);
   }
 
-  // interaction API 경로 헬퍼
   const InteractionAPI = {
     like: (todoId) => `/interaction/like/${todoId}/`,
     bookmark: (todoId) => `/interaction/bookmark/${todoId}/`,
@@ -62,7 +58,6 @@ document.addEventListener("DOMContentLoaded", () => {
     commentList: (todoId) => `/interaction/comment/${todoId}/list/`,
   };
 
-  // 안전한 숫자 변환
   function toNumber(v, fallback = 0) {
     const n = Number(v);
     return Number.isFinite(n) ? n : fallback;
@@ -130,12 +125,10 @@ document.addEventListener("DOMContentLoaded", () => {
       card.className = "todo-item";
       card.dataset.id = todo.id;
 
-      // 이미지 URL 처리
       const imageSrc = todo.image
         ? (todo.image.startsWith("http") ? todo.image : `${location.origin}${todo.image}`)
         : "";
 
-      // 안전한 기본값 처리
       const likeCount = toNumber(todo.like_count, 0);
       const bookmarkCount = toNumber(todo.bookmark_count, 0);
       const commentCount = toNumber(todo.comment_count, 0);
@@ -152,7 +145,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         ${imageSrc ? `<img src="${imageSrc}" style="max-width:200px;">` : ""}
 
-        <!-- 액션 바 -->
         <div class="todo-actions" style="display:flex; gap:10px; align-items:center; margin-top:10px;">
           <button class="btn-like" type="button"
             data-id="${todo.id}" aria-pressed="${isLiked}"
@@ -176,17 +168,14 @@ document.addEventListener("DOMContentLoaded", () => {
           </button>
         </div>
 
-        <!-- 댓글 입력 영역 (기본 숨김) -->
         <div class="comment-box" style="display:none; margin-top:10px;">
           <textarea class="comment-text" rows="3" style="width:100%;"></textarea>
           <button class="comment-submit" data-id="${todo.id}">등록</button>
         </div>
 
-        <!-- 댓글 표시 영역 -->
         <div class="comment-list" style="margin-top:8px;"></div>
       `;
 
-      // 카드 클릭 → detail 이동 (단, 액션/댓글 영역 클릭은 제외)
       card.addEventListener("click", (e) => {
         if (e.target.closest(".todo-actions") || e.target.closest(".comment-box")) return;
         window.location.href = `/todo/detail/${todo.id}/`;
@@ -213,18 +202,15 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // ======================================================
-  // 4) 이벤트 처리 (이벤트 위임 + 버튼 이벤트)
+  // 4) 이벤트 처리
   // ======================================================
-  // 좋아요/북마크/댓글/댓글등록 (이벤트 위임)
   document.addEventListener("click", async (e) => {
-    // 좋아요
     const likeBtn = e.target.closest(".btn-like");
     if (likeBtn) {
       e.stopPropagation();
       e.preventDefault();
 
       const todoId = likeBtn.dataset.id;
-
       try {
         const res = await window.api.post(InteractionAPI.like(todoId));
         const { liked, like_count } = res.data;
@@ -240,14 +226,12 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // 북마크
     const bookmarkBtn = e.target.closest(".btn-bookmark");
     if (bookmarkBtn) {
       e.stopPropagation();
       e.preventDefault();
 
       const todoId = bookmarkBtn.dataset.id;
-
       try {
         const res = await window.api.post(InteractionAPI.bookmark(todoId));
         const { bookmarked, bookmark_count } = res.data;
@@ -263,7 +247,6 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // 댓글 버튼 → 입력창 토글
     const commentBtn = e.target.closest(".btn-comment");
     if (commentBtn) {
       e.stopPropagation();
@@ -271,13 +254,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const card = commentBtn.closest(".todo-item");
       const box = card.querySelector(".comment-box");
-
       box.style.display =
         (box.style.display === "none" || !box.style.display) ? "block" : "none";
       return;
     }
 
-    // 댓글 등록
     const submitBtn = e.target.closest(".comment-submit");
     if (submitBtn) {
       e.stopPropagation();
@@ -294,9 +275,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const res = await window.api.post(InteractionAPI.comment(todoId), { content });
         const saved = res.data;
 
-        // comment-list는 항상 만들어두었지만, 안전하게 재확인
         const listEl = card.querySelector(".comment-list");
-
         const item = document.createElement("div");
         item.className = "comment-item";
         item.style.padding = "6px 0";
@@ -307,14 +286,10 @@ document.addEventListener("DOMContentLoaded", () => {
         `;
         listEl.prepend(item);
 
-        // 댓글 수 +1
         const countEl = card.querySelector(".btn-comment .count");
         countEl.textContent = toNumber(countEl.textContent, 0) + 1;
 
-        // 입력 초기화
         textarea.value = "";
-
-        // 입력창 유지(원하면 none으로 변경 가능)
         card.querySelector(".comment-box").style.display = "block";
       } catch (err) {
         handleAuthError(err).catch(() => {});
@@ -325,7 +300,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // 페이지 이동 버튼
   document.getElementById("prevBtn").addEventListener("click", () => {
     if (currentPage > 1) loadPage(currentPage - 1);
   });
@@ -334,12 +308,10 @@ document.addEventListener("DOMContentLoaded", () => {
     loadPage(currentPage + 1);
   });
 
-  // 생성 페이지 이동
   document.getElementById("createBtn").addEventListener("click", () => {
     window.location.href = "/todo/create/";
   });
 
-  // 영화 리뷰 페이지 이동
   document.getElementById("movieReviewsBtn").addEventListener("click", () => {
     window.location.href = "/reviews/page/";
   });

@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from ..models import Todo
 from ..serializers import TodoSerializer
 from interaction.models import TodoLike, TodoBookmark, TodoComment
+from django.db.models import Q
 
 
 # ---------------------------------------------------------
@@ -28,13 +29,12 @@ class TodoViewSet(viewsets.ModelViewSet):
     pagination_class = TodoListPagination
 
     def get_queryset(self):
-        # 로그인한 사용자의 Todo만 반환
-        print("🔍 request.user:", self.request.user)
-        print("🔍 is_authenticated:", self.request.user.is_authenticated)
-        return Todo.objects.filter(user=self.request.user).order_by("-created_at")
+        user = self.request.user
+        return Todo.objects.filter(Q(is_public=True) | Q(user=user)).order_by(
+            "-created_at"
+        )
 
     def perform_create(self, serializer):
-        # 생성 시 user를 자동으로 로그인한 사용자로 설정
         serializer.save(user=self.request.user)
 
     # -----------------------------------------------------

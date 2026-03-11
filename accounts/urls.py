@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import SignupAPIView, SessionLogoutAPIView
+from .views import SignupAPIView, SessionLogoutAPIView, MeAPIView
 from .views_page import LoginPageView, SignupPageView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
@@ -12,6 +12,7 @@ urlpatterns = [
     path("api/token/refresh/", TokenRefreshView.as_view(), name="jwt-refresh"),
     # (임시 유지) 세션 로그아웃 API - JWT에서는 의미가 약함 (6단계에서 정리 권장)
     path("api/logout/", SessionLogoutAPIView.as_view(), name="api-logout"),
+    path("me/", MeAPIView.as_view()),
     # Pages
     path("signup-page/", SignupPageView.as_view(), name="page-signup"),
     path("login/", LoginPageView.as_view(), name="page-login"),
